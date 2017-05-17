@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("CustomVision", "Prediction Tag: " + secondPrediction.getTag());
                 Log.i("CustomVision", "Prediction Probability: " + secondPrediction.getProbability().toString());
 
-                Boolean isFood = !(firstPrediction.getProbability() <= 5 && secondPrediction.getProbability() <= 5);
+                Boolean isFood = !(firstPrediction.getProbability() <= 0.05 && secondPrediction.getProbability() <= 0.05);
                 Boolean isHealthy = firstPrediction.getTag().equals("healthy");
                 mFood.setFood(isFood);
                 mFood.setHealthy(isHealthy);
