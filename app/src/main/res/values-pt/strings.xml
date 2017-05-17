@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Comida Saudável</string>
+    <string name="healthy">SAUDÁVEL</string>
+    <string name="junk">LIXO</string>
+    <string name="not_a_food">Isso é uma comida?</string>
+    <string name="no_foods">Clique no ícone da câmera para adicionar uma nova Comida</string>
+    <string name="progress_dialog">"Analizando foto. \n\nPor favor, aguarde…"</string>
+    <string name="api_error">Erro ao tentar se comunicar com o servidor</string>
+    <string name="retry_btn">REPETIR</string>
+    <string name="menu_about">Sobre</string>
+    <string name="dialog_about">Desenvolvido por:\n\nDaniel Sousa\nsousa.dfs@gmail.com</string>
+</resources>
