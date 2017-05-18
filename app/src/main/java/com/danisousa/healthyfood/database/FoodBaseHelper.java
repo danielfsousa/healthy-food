@@ -30,6 +30,7 @@ public class FoodBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE " + FoodTable.NAME);
+        onCreate(db);
     }
 }
