@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +25,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -145,8 +143,16 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<CustomVisionResponse>() {
             @Override
             public void onResponse(Call<CustomVisionResponse> call, Response<CustomVisionResponse> response) {
-                CustomVisionPrediction firstPrediction = response.body().getPredictions().get(0);
-                CustomVisionPrediction secondPrediction = response.body().getPredictions().get(0);
+                CustomVisionPrediction firstPrediction;
+                CustomVisionPrediction secondPrediction;
+
+                try {
+                    firstPrediction = response.body().getPredictions().get(0);
+                    secondPrediction = response.body().getPredictions().get(0);
+                } catch (NullPointerException ex) {
+                    onFailure(call, ex);
+                    return;
+                }
 
                 Log.i("CustomVision", "Prediction Tag: " + firstPrediction.getTag());
                 Log.i("CustomVision", "Prediction Probability: " + firstPrediction.getProbability().toString());
@@ -172,14 +178,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void printError() {
-        Snackbar.make(findViewById(R.id.coordinatorLayout), getString(R.string.api_error), Snackbar.LENGTH_SHORT)
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), getString(R.string.api_error), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.retry_btn), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        mDialog = ProgressDialog.show(MainActivity.this, "", getString(R.string.progress_dialog), true);
                         callAPI();
                     }
-                })
-                .show();
+                });
+
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                    deleteFoodFileFromDisk(mFood);
+                    updateUI();
+                }
+            }
+        });
+
+        snackbar.show();
     }
 
     public void updateUI() {
@@ -217,10 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                     Food food = mFoods.get(viewHolder.getAdapterPosition());
-                    File photoFile = mFoodLab.getPhotoFile(food);
-                    Uri photoUri = FileProvider.getUriForFile(MainActivity.this, FILE_PROVIDER, photoFile);
-                    getContentResolver().delete(photoUri, null, null);
-                    FoodLab.get(MainActivity.this).deleteFood(food.getId());
+                    deleteFoodFileFromDisk(food);
                     updateUI();
                 }
             });
@@ -259,6 +274,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void deleteFoodFileFromDisk(Food food) {
+        File photoFile = mFoodLab.getPhotoFile(food);
+        Uri photoUri = FileProvider.getUriForFile(this, FILE_PROVIDER, photoFile);
+        getContentResolver().delete(photoUri, null, null);
+        FoodLab.get(this).deleteFood(food.getId());
+    }
+
     private class FoodHolder extends RecyclerView.ViewHolder {
 
         private ImageView mImageView;
@@ -272,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
 
         public void bind(Food food) {
             File photoFile = mFoodLab.getPhotoFile(food);
-//            Bitmap bitmap = PictureUtils.createThumbnail(photoFile);
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getPath());
             mImageView.setImageBitmap(bitmap);
             mTitleTextView.setText(food.getTitle(MainActivity.this));
