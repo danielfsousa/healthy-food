@@ -6,8 +6,6 @@ Inspired by [Jian Yang's "Not hotdog" app](https://www.youtube.com/watch?v=ACmyd
 ## Download
 [Latest APK](https://github.com/danielfsousa/healthy-food/releases/latest)
 
-[v1.0.3](https://github.com/danielfsousa/healthy-food/releases/download/v1.0.3/healthy-food-v1.0.3.apk)
-
-[v1.0.2](https://github.com/danielfsousa/healthy-food/releases/download/v1.0.2/healthy-food-v1.0.2.apk)
-
-[v1.0.1](https://github.com/danielfsousa/healthy-food/releases/download/v1.0.1/healthy-food-v1.0.1.apk)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/11372312/28652723-d7edaf02-725f-11e7-922e-db946d4127cf.gif">
+</p>
